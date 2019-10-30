@@ -6,7 +6,7 @@ class Tables
     //생성자
     public function __construct($db)
     {
-        echo __CLASS__;
+        //echo __CLASS__;
         $this->db = $db;
     }
 
@@ -21,7 +21,7 @@ class Tables
         $rows = []; //배열 초기화
         for($i=0;$i<$count;$i++) {
             $row = mysqli_fetch_object($result);
-            $rows []=$row;
+            $rows []=$row; //배열 추가
         }
         $content = $html->table($rows);
 
