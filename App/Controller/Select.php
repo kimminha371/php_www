@@ -30,30 +30,48 @@ class Select
     // 새로운 데이터를 입력
     public function newInsert($tableName)
     {
-        print_r($_POST);
+        //print_r($_POST);
         if($_POST) {
-            $query = "INSERT INTO ".$tableName." (`FirstName`,`LastName`) 
-                        VALUES ('".$_POST['firstname']."','".$_POST['lastname']."')";
+            $fields = " (";
+            $data = "(";
+            foreach($_POST as $key => $value){
+                $fields .= "`".$key."`,";
+                $data .= "'".$value."',";
+            } 
+            $fields = rtrim($fields,","); //마지막 콤마 제거
+            $data = rtrim($data,","); //마지막 콤마 제거
+            $fields .= ")";
+            $data .= ")";
+
+            //$query .= " (`FirstName`,`LastName`)";
+            $query = "INSERT INTO ".$tableName.$fields." VALUES ".$data;
+            //$query .= "('".$_POST['FirstName']."','".$_POST['LastName']."')";
+
+            echo $query."<br>";
+            //exit;
+
             $result = $this->db->queryExecute($query);
 
             //페이지 이동
             header("location:"."/select/".$tableName);
         }
-        //echo "메인 호출이에요";
+        $content = "<form method=\"post\">";
         $query = "DESC ".$tableName;
         $result =$this->db->queryExecute($query);
-
         $count = mysqli_num_rows($result);
-        $content = ""; //초기화
-        $rows = []; //배열 초기화
         for($i=0;$i<$count;$i++) {
             $row = mysqli_fetch_object($result);
-            $rows []=$row; //배열추가
+            //print_r($row);
+            if($row->Field=="id") continue;
+            $content .= $row->Field."<input type=\"text\" name=\"".$row->Field."\">";
+            $content .= "<br>";
         }
-        $content = $this->Html->table($rows);
+        $content .= "<input type=\"submit\" value=\"전송\">";
+        $content .= "</form>";
 
         $body = file_get_contents("../Resource/insert.html");
         $body = str_replace("{{content}}",$content,$body); //데이터 치환
+
         echo $body;
     }
         
@@ -83,9 +101,11 @@ class Select
     } else {
         $content = "선택된 테이블이 없습니다.";
     }   
-        
         $body = file_get_contents("../Resource/select.html");
         $body = str_replace("{{content}}",$content,$body); //데이터 치환
+
+        //테이블별로 new 버튼 링크 생성
+        $body = str_replace("{{new}}",$tableName."/new",$body);
         echo $body;
     }
 }
