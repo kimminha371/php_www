@@ -177,18 +177,15 @@ class Select
             //전체갯수
             $query = "SELECT (`id`) from ".$tableName; // SQL 쿼리문
             echo $query;
+
             $result = $this->db->queryExecute($query);
             $total = mysqli_num_rows($result);
 
             echo "전체갯수 = ".$total;
-            /*
-            echo $_SERVER['REQUEST_URI'];
-            $limit = explode("#",$_SERVER['REQUEST_URI']);//파란책
-            print_r($limit);
-            */
 
             $lines = 5;
-            $start = 0;
+            $start = $_GET['start']? $_GET['start']:0;
+            $start = $start * $lines;
 
             $query = "SELECT * from ".$tableName; // SQL 쿼리문
             $query .= " LIMIT ".$start.",".$lines;
