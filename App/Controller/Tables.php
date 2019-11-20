@@ -14,28 +14,29 @@ class Tables
         $uri = new \Module\Http\Uri;
         if($uri->second() == "new") {
             print_r($_POST);
-            if($_POST){
+            if($_POST) {
                 $query .= "CREATE TABLE `".$_POST['tablename']."` (
                     `id` int(11) NOT NULL AUTO_INCREMENT,
-                    PRIMARY KEY(`id`)
-                ) ENGINE=InnoDB default charset=utf8";
-                echo $query;
+                    PRIMARY KEY(`id`) 
+                    ) ENGINE=innodb default charset=utf8;
+                ";
+                // echo $query;
+                // exit;
                 $result = $this->db->queryExecute($query);
-
-                //페이지 이동
+                // 페이지 이동
                 header("location:"."/tables");
             }
             // 새로운 테이블 생성
             $htmlForm = file_get_contents("../Resource/table_new.html");
             echo $htmlForm;
-        }else {
+        
+        } else {
             // 테이블 목록
             $this->list();
         }
         
     }
-
-    public function list() 
+    private function list()
     {
         $html = new \Module\Html\HtmlTable;
         $query = "SHOW TABLES";

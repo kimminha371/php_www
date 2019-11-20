@@ -9,39 +9,44 @@ class Databases
         // echo __CLASS__;
         $this->db = $db; 
     }
+
     public function main()
     {
-
         $uri = new \Module\Http\Uri;
         if($uri->second() == "new") {
             print_r($_POST);
             if($_POST) {
-                //새로운 데이터베이스를 추가
+                // 새로운 데이터베이스를 추가
                 $query = "CREATE DATABASE ".$_POST['database'];
                 echo $query;
 
                 $result = $this->db->queryExecute($query);
-                
-                //페이지이동
+
+                // 페이지 이동
                 header("location:"."/databases");
-            }else {
-                // echo "데이터베이스를 생성해주세요";
+
+            } else {
+                // 데이터베이스 입력해 주세요
+                // 새로운 데이터베이스 추가
+                // echo "데이터베이스를 생성해 주세요.";
                 $htmlForm = file_get_contents("../Resource/database_new.html");
                 echo $htmlForm;
             }
+
             
         } else {
             // 데이터베이스 목록
             $this->list();
-        }
-        
+        }        
     }
 
-    public function list() 
+    public function list()
     {
         $html = new \Module\Html\HtmlTable;
+
         $query = "SHOW DATABASES";
         $result = $this->db->queryExecute($query);
+
         $count = mysqli_num_rows($result);
         $content = ""; // 초기화
         $rows = []; // 배열 초기화
@@ -56,6 +61,7 @@ class Databases
             ];
         }
         $content = $html->table($rows);
+
         $body = file_get_contents("../Resource/database.html");
         $body = str_replace("{{content}}",$content, $body); // 데이터 치환
         echo $body;
